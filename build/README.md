@@ -248,7 +248,7 @@ A Windows endpoint used to simulate real-world enterprise targets. Useful for pr
 ### Active Directory Domain (`corp.aegispro.lab`)
 
 **DC01 — Domain Controller (Windows Server 2019)**
-- Hosts AD DS, DNS, and Kerberos for the `corp.aegispro.lab` domain
+- Hosts AD DS, DNS, and Kerberos for the `ASBank.com` domain
 - Holds all FSMO roles
 - Stores user accounts, computer accounts, group memberships, and GPOs
 - Primary target for enumeration and high-value attacks (DCSync, Kerberoasting, NTDS.dit dumping)
