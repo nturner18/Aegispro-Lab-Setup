@@ -13,7 +13,7 @@ This home lab serves as the technical foundation for AegisPro CyberShield TX's s
 - Developing and refining client-facing reporting workflows
 - Maintaining active, demonstrable cybersecurity skills
 
-> **Disclaimer:** All testing conducted in this lab is performed exclusively against owned, intentionally vulnerable machines on an isolated private network. No unauthorized systems are ever targeted.
+> **Disclaimer:** All testing conducted in this lab is performed exclusively against owned, intentionally vulnerable machines on an isolated private network. No unauthorized systems are ever targeted. The AcrossStatesBank Active Directory environment is entirely fictional.
 
 ---
 
@@ -25,28 +25,19 @@ This home lab serves as the technical foundation for AegisPro CyberShield TX's s
 ┌────────────────────────────────────────────────────────────────────┐
 │                       VMware Host Machine                          │
 │                                                                    │
-│   ┌─────────────┐         ┌──────────────────────────────┐         │
-│   │  Kali Linux │         │         pfSense VM           │         │
-│   │  (Attacker) │◄───────►│   Router / Firewall / Switch │         │
-│   │  10.0.1.x   │         │   WAN: 192.168.x.1 (NAT)     │         │
-│   └─────────────┘         │   LAN: 10.0.1.1              │         │
-│                           └──────────────┬───────────────┘         │
-│                                          │                          │
-│        ┌─────────────────────────────────┼─────────────────────┐   │
-│        │                                 │                     │   │
-│   ┌────▼─────┐  ┌──────────┐  ┌──────────▼──────────────┐  ┌──▼──┐ │
-│   │  Linux   │  │   Web    │  │   AD Domain (corp.      │  │DVWA │ │
-│   │  Targets │  │  Targets │  │   aegispro.lab)         │  │ VM  │ │
-│   ├──────────┤  ├──────────┤  │                         │  └─────┘ │
-│   │Meta-     │  │ DVWA VM  │  │  ┌──────────────┐       │          │
-│   │sploitable│  │          │  │  │ DC01 (Server │       │          │
-│   │    2     │  │          │  │  │     2019)    │       │          │
-│   └──────────┘  └──────────┘  │  └──────────────┘       │          │
-│   ┌──────────┐                │  ┌────┐ ┌────┐ ┌────┐   │          │
-│   │ VulnHub  │                │  │WS01│ │WS02│ │WS03│   │          │
-│   │ Machines │                │  │Win10│ │Win10│ │Win10│  │          │
-│   └──────────┘                │  └────┘ └────┘ └────┘   │          │
-│                                └─────────────────────────┘          │
+│   ┌─────────────┐         ┌──────────────────────────────┐        │
+│   │  Kali Linux │         │         pfSense VM           │        │
+│   │  (Attacker) │◄───────►│   Router / Firewall / Switch │        │
+│   │  10.0.1.x   │         │   WAN: VMnet8 (NAT)          │        │
+│   └─────────────┘         │   LAN: 10.0.1.1              │        │
+│                           └──────────────┬───────────────┘        │
+│                                          │                         │
+│     ┌────────────────────────────────────┴──────────────────┐     │
+│     │                  Lab LAN (10.0.1.0/24)                │     │
+│     │                                                        │     │
+│  ASBankDC1 (10.0.1.201)   ASB-CB-WS01   ASB-PB-WS02        │     │
+│  Metasploitable 2         DVWA VM        VulnHub Targets    │     │
+│     └────────────────────────────────────────────────────── ┘     │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -54,9 +45,9 @@ This home lab serves as the technical foundation for AegisPro CyberShield TX's s
 
 | Segment | Interface | Subnet | Purpose |
 |---------|-----------|--------|---------|
-| WAN | pfSense WAN | 192.168.x.0/24 | Simulated external network / NAT to host |
-| LAN | pfSense LAN | 10.0.1.0/24 | Internal lab network — all target VMs |
-| Attacker | Kali Linux | 10.0.1.x | Connects to LAN segment for testing |
+| WAN | pfSense WAN (VMnet8) | NAT via VMware | Simulated external / internet access |
+| LAN | pfSense LAN (VMnet2) | 10.0.1.0/24 | Internal lab network — all target VMs |
+| Attacker | Kali Linux | 10.0.1.x | Attack and assessment platform |
 
 ### Isolation Design
 
@@ -73,20 +64,16 @@ Traffic in this lab is controlled and segmented by pfSense, which acts as the si
 
 | Component | Details |
 |-----------|---------|
-| Hypervisor | VMware Workstation / VMware Player |
-| Attacker OS | Kali Linux 2024.x (Rolling Release) |
+| Hypervisor | VMware Workstation Pro 25H2 (25.0.0.24995812) |
+| Attacker OS | Kali Linux 2025.2 (Rolling Release) |
 | Firewall / Router | pfSense — network segmentation, firewall rules, DHCP, DNS |
 | Network Architecture | pfSense-routed LAN (10.0.1.0/24) with simulated WAN segment |
-| Domain Controller | Windows Server 2019 (DC01) — `corp.aegispro.lab` domain |
-| Domain Workstations | 3x Windows 10 Pro (WS01, WS02, WS03) — domain-joined |
-| AD Configuration | Simulated user accounts, OU structure, group policies |
+| Domain Controller | ASBankDC1 — Windows Server 2019 (10.0.1.201) — `ASBank.com` domain |
+| Domain Workstations | ASB-CB-WS01, ASB-PB-WS02 (Windows 10 Pro) — domain-joined |
+| AD Configuration | 15 simulated users, OU structure, security groups, GPOs |
 | Linux Target | Metasploitable 2 — intentionally vulnerable Linux VM |
 | Web App Target | DVWA (Damn Vulnerable Web App) |
 | Additional Targets | VulnHub machines — rotating CTF-style vulnerable VMs |
-
----
-
-
 
 ---
 
@@ -98,13 +85,18 @@ A dedicated Windows Active Directory domain has been built within the lab to sup
 
 | Component | Details |
 |-----------|---------|
-| Domain Name | `corp.aegispro.lab` |
-| Domain Controller | DC01 — Windows Server 2019 |
-| Forest Functional Level | Windows Server 2016 / 2019 |
-| DNS | Integrated AD DNS on DC01 |
-| Member Workstations | WS01, WS02, WS03 (Windows 10 Pro) |
-| User Accounts | Simulated user population across multiple OUs |
-| Group Policy | Baseline GPOs configured for testing |
+| Domain Name | `ASBank.com` |
+| Domain FQDN | `ASBankDC1.ASBank.com` |
+| Domain Controller | ASBankDC1 — Windows Server 2019 (10.0.1.201) |
+| Forest Functional Level | Windows Server 2016 |
+| DNS | Active Directory-integrated DNS on ASBankDC1 |
+| Member Workstations | ASB-CB-WS01, ASB-PB-WS02 (Windows 10 Pro) |
+| User Accounts | 15 simulated users across 4 department OUs + 2 service accounts |
+| Group Policy | Password policy, workstation lockdown, audit policy |
+
+### Fictional Client Context
+
+All Active Directory work is performed against a fictional client environment — **AcrossStatesBank** — a representative community bank scenario. See [client-profiles/AcrossStatesBank.md](./client-profiles/AcrossStatesBank.md) for full engagement context.
 
 ### Why an AD Domain in the Lab
 
@@ -112,7 +104,7 @@ A working Active Directory environment provides realistic conditions for practic
 
 This environment supports practice across:
 
-- Active Directory enumeration (BloodHound, PowerView, ldapsearch)
+- Active Directory enumeration (BloodHound, CrackMapExec, ldapsearch)
 - Kerberos attacks (Kerberoasting, AS-REP Roasting)
 - Credential access and lateral movement (Pass-the-Hash, Pass-the-Ticket)
 - Network credential capture (LLMNR/NBT-NS poisoning, SMB relay)
@@ -137,7 +129,7 @@ This environment supports practice across:
 | **Metasploit Framework** | Exploitation framework | Validating vulnerabilities found during scanning, post-exploitation practice |
 | **Burp Suite** | Web application security testing | Intercepting HTTP/S traffic, identifying injection flaws, web app vulnerability testing |
 
-### Active Directory Tools (planned)
+### Active Directory Tools
 | Tool | Purpose | Usage |
 |------|---------|-------|
 | **BloodHound / SharpHound** | AD relationship visualization | Mapping attack paths from any user to Domain Admin, identifying privilege escalation routes |
@@ -145,12 +137,11 @@ This environment supports practice across:
 | **Impacket suite** | Python AD attack toolkit | Kerberoasting (`GetUserSPNs.py`), AS-REP Roasting (`GetNPUsers.py`), Pass-the-Hash, DCSync |
 | **Responder** | Network credential harvester | LLMNR/NBT-NS/mDNS poisoning to capture NTLM hashes |
 | **Hashcat** | Password cracking | Offline cracking of captured Kerberos tickets and NTLM hashes |
-| **Mimikatz / Rubeus** | Windows credential dumping & Kerberos manipulation | LSASS dumping, ticket extraction, Pass-the-Ticket attacks |
 
 ### Network Infrastructure
 | Tool | Purpose | Usage |
 |------|---------|-------|
-| **pfSense** | Router / Firewall / Switch | Network segmentation, firewall rule creation and testing, DHCP/DNS management, traffic logging, IDS/IPS integration |
+| **pfSense** | Router / Firewall / Switch | Network segmentation, firewall rule creation and testing, DHCP/DNS management, traffic logging |
 
 ### Analysis & Monitoring
 | Tool | Purpose | Usage |
@@ -168,7 +159,7 @@ This environment supports practice across:
    └── Define target IP range, assessment type (authenticated/unauthenticated)
 
 2. Host Discovery
-   └── nmap -sn 192.168.x.0/24
+   └── nmap -sn 10.0.1.0/24
 
 3. Port & Service Enumeration
    └── nmap -sV -sC -O <target IP>
@@ -196,81 +187,11 @@ This environment supports practice across:
    ├── SQL Injection
    ├── Cross-Site Scripting (XSS)
    ├── Command Injection
-   ├── File Inclusion
+   ├── File Upload
    └── CSRF
 4. Document findings and payloads used
 5. Research remediation for each vulnerability class
 ```
-
----
-
-## Target Machines
-
-### Metasploitable 2
-A deliberately insecure Linux VM designed for practicing penetration testing. Contains numerous unpatched services and misconfigurations across multiple vulnerability classes.
-
-**Key vulnerability categories present:**
-- Outdated and unpatched services (FTP, SSH, Telnet, HTTP)
-- Weak credentials and default passwords
-- Misconfigured network services
-- Known CVEs across multiple service versions
-
-**Primary use:** Full vulnerability assessment practice, OpenVAS scan validation, Metasploit exploitation practice.
-
----
-
-### DVWA (Damn Vulnerable Web App)
-A PHP/MySQL web application designed to practice common web vulnerabilities at adjustable difficulty levels.
-
-**Vulnerability classes covered:**
-- SQL Injection (classic and blind)
-- Reflected and Stored XSS
-- Command Injection
-- File Upload bypass
-- Insecure CAPTCHA
-- CSRF
-
-**Primary use:** Burp Suite interception practice, web application security testing, OWASP Top 10 skill development.
-
----
-
-### Windows VM
-A Windows endpoint used to simulate real-world enterprise targets. Useful for practicing:
-- Windows-specific enumeration and exploitation
-- Active Directory concepts (if domain configured)
-- Wireshark traffic analysis against Windows services
-- Antivirus and EDR evasion concepts
-
----
-
-
-
-### Active Directory Domain (`corp.aegispro.lab`)
-
-**DC01 — Domain Controller (Windows Server 2019)**
-- Hosts AD DS, DNS, and Kerberos for the `corp.aegispro.lab` domain
-- Holds all FSMO roles
-- Stores user accounts, computer accounts, group memberships, and GPOs
-- Primary target for enumeration and high-value attacks (DCSync, Kerberoasting, NTDS.dit dumping)
-
-**WS01, WS02, WS03 — Domain-Joined Workstations (Windows 10 Pro)**
-- Standard domain user logon experience for simulated users
-- Used to practice initial access, credential dumping, and lateral movement
-- Targets for client-side attack scenarios and Group Policy enumeration
-
-**Simulated Users and Groups**
-- Multiple test user accounts across organizational units
-- Group memberships designed to allow practice with privilege escalation paths
-- Service accounts configured to enable SPN/Kerberoasting practice
-
-**Primary use:** Active Directory attack simulation, lateral movement practice, credential access scenarios, and AD defensive control validation.
-
-### VulnHub Machines
-Rotating selection of CTF-style vulnerable VMs from [VulnHub](https://www.vulnhub.com). Each machine is documented in a separate write-up within this repository.
-
-**Completed machines:** *(see `/vulnhub-writeups/` folder)*
-
----
 
 ### Firewall Rule Testing Workflow (pfSense)
 
@@ -329,17 +250,82 @@ Rotating selection of CTF-style vulnerable VMs from [VulnHub](https://www.vulnhu
    └── Detection engineering: what should the SOC have caught?
 ```
 
+---
+
+## Target Machines
+
+### Metasploitable 2
+
+A deliberately insecure Linux VM designed for practicing penetration testing. Contains numerous unpatched services and misconfigurations across multiple vulnerability classes.
+
+**Key vulnerability categories present:**
+- Outdated and unpatched services (FTP, SSH, Telnet, HTTP)
+- Weak credentials and default passwords
+- Misconfigured network services
+- Known CVEs across multiple service versions
+
+**Primary use:** Full vulnerability assessment practice, OpenVAS scan validation, Metasploit exploitation practice.
+
+---
+
+### DVWA (Damn Vulnerable Web App)
+
+A PHP/MySQL web application designed to practice common web vulnerabilities at adjustable difficulty levels.
+
+**Vulnerability classes covered:**
+- SQL Injection (classic and blind)
+- Reflected and Stored XSS
+- Command Injection
+- File Upload bypass
+- Insecure CAPTCHA
+- CSRF
+
+**Primary use:** Burp Suite interception practice, web application security testing, OWASP Top 10 skill development.
+
+---
+
+### Active Directory Domain (`ASBank.com`)
+
+**ASBankDC1 — Domain Controller (Windows Server 2019)**
+- Hosts AD DS, DNS, and Kerberos for the `ASBank.com` domain
+- Holds all FSMO roles
+- IP: 10.0.1.201 (static)
+- Primary target for enumeration and high-value attacks (DCSync, Kerberoasting, NTDS.dit dumping)
+
+**ASB-CB-WS01, ASB-PB-WS02 — Domain-Joined Workstations (Windows 10 Pro)**
+- ASB-CB-WS01: Commercial Banking department workstation
+- ASB-PB-WS02: Personal Banking department workstation
+- Used to practice initial access, credential dumping, and lateral movement
+
+**Simulated Users and Groups**
+- 15 user accounts across Commercial Banking, Personal Banking, Corp, and IT Department OUs
+- Service accounts (svc_sql, svc_backup) configured with SPNs for Kerberoasting practice
+- svc_backup configured with pre-authentication disabled for AS-REP Roasting practice
+- Marcus Webb (m.webb) — Domain Admin account for lateral movement/privilege escalation scenarios
+
+**Primary use:** Active Directory attack simulation, lateral movement practice, credential access scenarios, and AD defensive control validation.
+
+### VulnHub Machines
+
+Rotating selection of CTF-style vulnerable VMs from [VulnHub](https://www.vulnhub.com). Each machine is documented in a separate write-up within this repository.
+
+**Completed machines:** *(see `/vulnhub-writeups/` folder)*
+
+---
+
 ## Repository Structure
 
 ```
-home-lab-setup/
-├── README.md                   ← this file
-├── images/
-│   ├── network-topology.png
-│   ├── openvas-dashboard.png
-│   ├── vmware-setup.png
-│   ├── pfsense-dashboard.png
-│   └── ad-domain-overview.png
+Aegispro-Lab-Setup/
+├── README.md                        ← this file
+├── build/                           ← phase-by-phase lab build documentation
+│   ├── README.md
+│   ├── phase-1-vmware-setup.md
+│   ├── phase-2-pfsense-network.md
+│   ├── phase-3-kali-tools.md
+│   ├── phase-4-target-machines.md
+│   ├── phase-5-active-directory.md
+│   └── images/
 ├── vulnhub-writeups/
 │   └── [machine-name]/
 │       ├── README.md
@@ -354,6 +340,8 @@ home-lab-setup/
 │       ├── bloodhound-enumeration/
 │       ├── lateral-movement/
 │       └── ad-hardening-recommendations/
+├── client-profiles/
+│   └── AcrossStatesBank.md
 └── configs/
     ├── openvas-scan-config-notes.md
     ├── pfsense-firewall-rules-notes.md
@@ -372,11 +360,11 @@ home-lab-setup/
 | Network traffic analysis | Wireshark |
 | Security reporting & documentation | Assessment write-ups, client-style reports |
 | Network architecture & segmentation | pfSense firewall, routing, DHCP/DNS |
-| Active Directory administration | Server 2019 DC, domain configuration, OU & GPO design |
-| AD security assessment (planned) | BloodHound, CrackMapExec, Impacket, Responder |
-| Windows enterprise threat modeling | Domain-joined attack scenarios, lateral movement paths |
-| Firewall rule design & testing | pfSense + Kali attack traffic validation |
-| Lab design & network isolation | VMware + pfSense multi-segment networking |
+| Firewall rule design & testing | pfSense default-deny policy, Kali attack traffic validation |
+| Active Directory administration | Server 2019 DC, OU/GPO design, user management |
+| AD security assessment | BloodHound, CrackMapExec, Impacket, Responder |
+| Kerberos attack techniques | Kerberoasting, AS-REP Roasting |
+| Lab design & network isolation | VMware Workstation Pro + pfSense multi-segment networking |
 
 ---
 
@@ -400,7 +388,8 @@ AegisPro CyberShield TX is an independent cybersecurity consulting practice base
 
 - **Certifications:** CISSP
 - **Focus areas:** Vulnerability assessment, security consulting, SMB security
-- **Contact:** [LinkedIn](https://linkedin.com) | [Website](https://aegisprocybershield.com)
+- **Website:** [aegisprotx.com](https://www.aegisprotx.com)
+- **Contact:** nturner@aegisprotx.com | [LinkedIn](https://linkedin.com/in/nturner18)
 
 ---
 
