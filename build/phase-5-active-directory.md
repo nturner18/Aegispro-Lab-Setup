@@ -263,4 +263,4 @@ These weaknesses are intentional and documented here to make clear they represen
 ---
 
 *Previous: [Phase 4 — Target Machine Setup](./phase-4-target-machines.md)*
-*Next: Phase 6 — Vulnerability Assessment (coming soon)*
+*Next: [Phase 6 — Vulnerability Assessment](./phase-6-vulnerability-assessment.md)*
