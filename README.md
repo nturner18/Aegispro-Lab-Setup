@@ -37,6 +37,27 @@ This lab is built on VMware Workstation Pro and covers the full stack of a small
 └────────────────────────────────────────────────────────────────────┘
 ```
 
+### Host Machine
+
+This lab runs on a custom-built desktop PC purpose-built to handle multiple simultaneous virtual machines. All VMs run on this single host via VMware Workstation Pro.
+
+| Component | Details |
+|-----------|---------|
+| **CPU** | Intel Core i9-10900KF — 10 cores / 20 threads @ 3.70GHz |
+| **RAM** | 64GB DDR4 (V-Color Technology — 2x 32GB) |
+| **Motherboard** | MSI MPG Z590 Gaming Carbon WiFi (MS-7D06) |
+| **GPU** | MSI GeForce RTX 5060 Ti Gaming Trio OC 16GB |
+| **Storage (Primary)** | WD Black SN7100 2TB NVMe SSD — OS and primary VM storage |
+| **Storage (Secondary)** | WDC WDBNCE5000PNC 500GB — supplemental storage |
+| **Cooling** | Lian Li Galahad II LCD AIO Liquid Cooler |
+| **Case** | Phanteks XT Pro Mid-Tower — High Airflow Mesh, Tempered Glass |
+| **OS** | Microsoft Windows 11 Pro (Build 26200) |
+| **Hypervisor** | VMware Workstation Pro 25H2 (25.0.0.24995812) |
+
+**Why this hardware matters for the lab:**
+
+The i9-10900KF's 10-core/20-thread configuration allows 7+ VMs to run simultaneously without contention. 64GB RAM provides generous allocation across all VMs including pfSense (4GB), DC01 (8GB), Kali (8GB), two workstations, and future Security Onion integration (24GB). The NVMe primary drive ensures fast VM disk I/O — critical for OpenVAS scanning and AD operations that are disk-intensive.
+
 ### Environment
 
 | Component | Details |
@@ -122,8 +143,8 @@ The lab build is documented phase by phase. Each write-up covers objectives, ste
 | [Phase 3](./build/phase-3-kali-tools.md) | Kali Linux Tool Verification | ✅ Complete |
 | [Phase 4](./build/phase-4-target-machines.md) | Linux & Web Application Target Setup | ✅ Complete |
 | [Phase 5](./build/phase-5-active-directory.md) | Active Directory Environment Build | ✅ Complete |
-| Phase 6 | Vulnerability Assessment Workflow | 🔄 In Progress |
-| Phase 7 | Web Application Testing Workflow | 🔄 In Progress |
+| [Phase 6](./build/phase-6-vulnerability-assessment.md) | Vulnerability Assessment Workflow | ✅ Complete |
+| [Phase 7](./build/phase-7-web-application-testing.md) | Web Application Testing Workflow | ✅ Complete |
 | Phase 8 | Firewall Rule Testing | 🔄 In Progress |
 | Phase 9 | Active Directory Attack Workflow | 🔄 In Progress |
 | Phase 10 | Documentation & Screenshot Collection | 🔄 In Progress |
