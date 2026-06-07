@@ -364,7 +364,7 @@ Result: `www-data` — full RCE achieved despite Medium security validation.
 ---
 
 *Previous: [Phase 6 — Vulnerability Assessment](./phase-6-vulnerability-assessment.md)*
-*Next: Phase 8 — Firewall Rule Testing (coming soon)*
+*Next: [Phase 8 — Firewall Rule Testing](./phase-8-firewall-rule-testing.md)*
 
 ---
 
