@@ -314,7 +314,7 @@ All inter-VLAN traffic will be routed through pfSense. A block rule for Kali →
 ---
 
 *Previous: [Phase 7 — Web Application Testing](./phase-7-web-application-testing.md)*
-*Next: Phase 9 — Active Directory Attack Workflow (coming soon)*
+*Next: [Phase 9 — Active Directory Attack Workflow](./phase-9-active-directory-attacks.md)*
 
 ---
 
