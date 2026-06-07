@@ -66,7 +66,7 @@ Traffic in this lab is controlled and segmented by pfSense, which acts as the si
 |-----------|---------|
 | Hypervisor | VMware Workstation Pro 25H2 (25.0.0.24995812) |
 | Attacker OS | Kali Linux 2025.2 (Rolling Release) |
-| Firewall / Router | pfSense — network segmentation, firewall rules, DHCP, DNS |
+| Firewall / Router | pfSense 2.8.1 — network segmentation, firewall rules, DHCP, DNS |
 | Network Architecture | pfSense-routed LAN (10.0.1.0/24) with simulated WAN segment |
 | Domain Controller | ASBankDC1 — Windows Server 2019 (10.0.1.201) — `ASBank.com` domain |
 | Domain Workstations | ASB-CB-WS01, ASB-PB-WS02 (Windows 10 Pro) — domain-joined |
@@ -325,6 +325,11 @@ Aegispro-Lab-Setup/
 │   ├── phase-3-kali-tools.md
 │   ├── phase-4-target-machines.md
 │   ├── phase-5-active-directory.md
+│   ├── phase-6-vulnerability-assessment.md
+│   ├── phase-7-web-application-testing.md
+│   ├── phase-8-firewall-rule-testing.md
+│   ├── phase-9-active-directory-attacks.md
+│   ├── phase-10-documentation.md
 │   └── images/
 ├── vulnhub-writeups/
 │   └── [machine-name]/
@@ -362,8 +367,12 @@ Aegispro-Lab-Setup/
 | Network architecture & segmentation | pfSense firewall, routing, DHCP/DNS |
 | Firewall rule design & testing | pfSense default-deny policy, Kali attack traffic validation |
 | Active Directory administration | Server 2019 DC, OU/GPO design, user management |
-| AD security assessment | BloodHound, CrackMapExec, Impacket, Responder |
-| Kerberos attack techniques | Kerberoasting, AS-REP Roasting |
+| AD security assessment | BloodHound CE, CrackMapExec, Impacket, Responder |
+| Kerberos attack techniques | Kerberoasting (mode 13100), AS-REP Roasting (mode 18200) |
+| Credential capture & cracking | Responder NTLMv2, Hashcat modes 5600/13100/18200 |
+| Lateral movement | evil-winrm, Domain Admin shell on DC01 |
+| AD attack path visualization | BloodHound CE, Cypher queries, Domain Admin mapping |
+| MITRE ATT&CK alignment | T1557.001, T1558.003, T1558.004, T1021.006 |
 | Lab design & network isolation | VMware Workstation Pro + pfSense multi-segment networking |
 
 ---
@@ -393,4 +402,4 @@ AegisPro CyberShield TX is an independent cybersecurity consulting practice base
 
 ---
 
-*Last updated: May 2026*
+*Last updated: June 2026*
