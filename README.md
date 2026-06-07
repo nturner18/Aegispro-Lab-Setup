@@ -113,6 +113,11 @@ Aegispro-Lab-Setup/
 │   ├── phase-3-kali-tools.md
 │   ├── phase-4-target-machines.md
 │   ├── phase-5-active-directory.md
+│   ├── phase-6-vulnerability-assessment.md
+│   ├── phase-7-web-application-testing.md
+│   ├── phase-8-firewall-rule-testing.md
+│   ├── phase-9-active-directory-attacks.md
+│   ├── phase-10-documentation.md
 │   └── images/                        ← screenshots for all phases
 ├── assessments/                       ← vulnerability assessment write-ups
 │   ├── metasploitable-2/
@@ -145,9 +150,9 @@ The lab build is documented phase by phase. Each write-up covers objectives, ste
 | [Phase 5](./build/phase-5-active-directory.md) | Active Directory Environment Build | ✅ Complete |
 | [Phase 6](./build/phase-6-vulnerability-assessment.md) | Vulnerability Assessment Workflow | ✅ Complete |
 | [Phase 7](./build/phase-7-web-application-testing.md) | Web Application Testing Workflow | ✅ Complete |
-| Phase 8 | Firewall Rule Testing | 🔄 In Progress |
-| Phase 9 | Active Directory Attack Workflow | 🔄 In Progress |
-| Phase 10 | Documentation & Screenshot Collection | 🔄 In Progress |
+| [Phase 8](./build/phase-8-firewall-rule-testing.md) | Firewall Rule Testing | ✅ Complete |
+| [Phase 9](./build/phase-9-active-directory-attacks.md) | Active Directory Attack Workflow | ✅ Complete |
+| [Phase 10](./build/phase-10-documentation.md) | Documentation & Screenshot Collection | ✅ Complete |
 
 ---
 
@@ -162,8 +167,12 @@ The lab build is documented phase by phase. Each write-up covers objectives, ste
 | Network architecture & segmentation | pfSense multi-segment design |
 | Firewall rule design & validation | pfSense default-deny policy |
 | Active Directory administration | Server 2019 DC, OU design, GPO, user management |
-| AD security assessment | Impacket, CrackMapExec, Responder, BloodHound |
-| Kerberos attack techniques | Kerberoasting, AS-REP Roasting |
+| AD security assessment | Impacket, CrackMapExec, Responder, BloodHound CE |
+| Kerberos attack techniques | Kerberoasting (mode 13100), AS-REP Roasting (mode 18200) |
+| Credential capture & cracking | Responder NTLMv2, Hashcat modes 5600/13100/18200 |
+| Lateral movement | evil-winrm — Domain Admin shell on DC01 |
+| AD attack path visualization | BloodHound CE, Cypher queries, Domain Admin mapping |
+| MITRE ATT&CK alignment | T1557.001, T1558.003, T1558.004, T1021.006 |
 | Security reporting & documentation | Phase write-ups, assessment reports |
 
 ---
@@ -192,4 +201,4 @@ AegisPro CyberShield TX is an independent cybersecurity consulting practice base
 
 ---
 
-*Last updated: May 2026*
+*Last updated: June 2026*
