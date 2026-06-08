@@ -56,7 +56,7 @@ This lab runs on a custom-built desktop PC purpose-built to handle multiple simu
 
 **Why this hardware matters for the lab:**
 
-The i9-10900KF's 10-core/20-thread configuration allows 7+ VMs to run simultaneously without contention. 64GB RAM provides generous allocation across all VMs including pfSense (4GB), DC01 (8GB), Kali (8GB), two workstations, and future Security Onion integration (24GB). The NVMe primary drive ensures fast VM disk I/O — critical for OpenVAS scanning and AD operations that are disk-intensive.
+The i9-10900KF's 10-core/20-thread configuration allows 7+ VMs to run simultaneously without contention. 64GB RAM provides generous allocation across all VMs including pfSense (4GB), DC01 (8GB), Kali (8GB), two workstations, and Security Onion (24GB) which is deployed in the companion **[AegisPro-Home-Lab](https://github.com/nturner18/AegisPro-Home-Lab)** repository. The NVMe primary drive ensures fast VM disk I/O — critical for OpenVAS scanning and AD operations that are disk-intensive.
 
 ### Environment
 
@@ -119,18 +119,6 @@ Aegispro-Lab-Setup/
 │   ├── phase-9-active-directory-attacks.md
 │   ├── phase-10-documentation.md
 │   └── images/                        ← screenshots for all phases
-├── assessments/                       ← vulnerability assessment write-ups
-│   ├── metasploitable-2/
-│   └── active-directory/
-│       ├── kerberoasting/
-│       ├── bloodhound-enumeration/
-│       ├── lateral-movement/
-│       └── ad-hardening-recommendations/
-├── vulnhub-writeups/                  ← individual VulnHub machine write-ups
-├── configs/                           ← configuration notes
-│   ├── openvas-scan-config-notes.md
-│   ├── pfsense-firewall-rules-notes.md
-│   └── active-directory-build-notes.md
 └── client-profiles/                   ← fictional client engagement context
     └── AcrossStatesBank.md
 ```
@@ -198,6 +186,16 @@ AegisPro CyberShield TX is an independent cybersecurity consulting practice base
 - **Credential:** CISSP
 - **Website:** [aegisprotx.com](https://www.aegisprotx.com)
 - **Contact:** nturner@aegisprotx.com
+
+---
+
+## Continued Work
+
+This repository is complete at Phase 10. The lab build, network configuration, vulnerability assessment, web application testing, firewall implementation, and Active Directory attack simulation are fully documented.
+
+Ongoing lab practice and advanced security work is documented in a dedicated companion repository:
+
+**[AegisPro-Home-Lab](https://github.com/nturner18/AegisPro-Home-Lab)** — Security Onion SIEM, Wazuh EDR, VLAN segmentation, AD CS attacks, and more.
 
 ---
 

@@ -239,24 +239,23 @@ nmap -sn 10.0.1.0/24        # All lab hosts visible
 
 ## What's Next
 
-### Planned lab expansions
+This repository is now complete at Phase 10. The lab build, configuration, and initial attack simulation work is fully documented across all 10 phases.
 
-| Phase | Title | Priority |
-|-------|-------|---------|
-| Phase 11 | Security Onion SIEM Integration | High — pending 64GB RAM install |
-| Phase 12 | Wazuh EDR Deployment | Medium |
-| Phase 13 | GPO Hardening | Medium |
-| Phase 14 | VLAN Segmentation | Medium — architectural finding from Phase 8 |
-| Phase 15 | Additional VulnHub Machines | Ongoing |
-| Phase 16 | TryHackMe / HTB Integration | Ongoing |
-| Phase 17 | AD CS (Certificate Services) | Low |
-| Phase 18 | Cloud Integration (Azure AD hybrid) | Low |
+Ongoing lab practice, advanced tooling integration, and future security work will be documented in a dedicated repository:
 
-### AegisPro CyberShield TX — Business Development
+**[AegisPro-Home-Lab](https://github.com/nturner18/AegisPro-Home-Lab)**
 
-- Continue building client engagement portfolio under `Aegispro-Security-Assessments` repo
-- Document AEG-2026-001 redacted artifacts when ready
-- Expand DFW SMB client base using lab methodology as the foundation for all engagements
+That repo uses a labs-based structure rather than phases, organized by activity type. Planned work includes:
+
+| Lab | Description | Priority |
+|-----|-------------|---------|
+| Security Onion SIEM Integration | Deploy Security Onion on D: drive, integrate with pfSense traffic mirroring | High — pending 64GB RAM |
+| Wazuh EDR Deployment | Endpoint detection and response across domain workstations | Medium |
+| VLAN Segmentation | Resolve architectural finding from Phase 8 — segment lab network | Medium |
+| AD CS Attacks | Active Directory Certificate Services attack simulation | Medium |
+| Additional VulnHub Machines | Rotating CTF-style targets | Ongoing |
+| AD Hardening | GPO hardening, LAPS, tiered admin model | Medium |
+| Cloud Integration | Azure AD hybrid join, Entra ID Conditional Access | Low |
 
 ---
 
@@ -278,17 +277,11 @@ Aegispro-Lab-Setup/
 │   ├── phase-9-active-directory-attacks.md ✅
 │   ├── phase-10-documentation.md          ✅
 │   └── images/                            ← All phase screenshots
-├── assessments/
-│   ├── metasploitable-2/
-│   └── active-directory/
-├── vulnhub-writeups/
-├── client-profiles/
-│   └── AcrossStatesBank.md
-└── configs/
-    ├── openvas-scan-config-notes.md
-    ├── pfsense-firewall-rules-notes.md
-    └── active-directory-build-notes.md
+└── client-profiles/
+    └── AcrossStatesBank.md
 ```
+
+> **Note:** This repository is complete. Ongoing lab work, advanced tooling, and future security practice is documented in **[AegisPro-Home-Lab](https://github.com/nturner18/AegisPro-Home-Lab)**.
 
 ---
 
